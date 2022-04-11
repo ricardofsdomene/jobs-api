@@ -12,9 +12,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const user = "";
-const password = "";
-const database = "";
+const user = "ricardo";
+const password = "Azd202020";
+const database = "dbOne";
 const server = `mongodb+srv://${user}:${password}@cluster0.94tuo.mongodb.net/${database}?retryWrites=true&w=majority`;
 const config = { useNewUrlParser: true, useUnifiedTopology: true };
 

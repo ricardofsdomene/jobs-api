@@ -6,7 +6,7 @@ const JWT_SECRET = "f1naancial!";
 
 exports.fetchId = async (req, res) => {
   try {
-    const { _id } = req.body;
+    const { _id } = req.params;
 
     const user = await Usuario.findOne({ _id }).lean();
     return res.json(user);
@@ -14,6 +14,16 @@ exports.fetchId = async (req, res) => {
     return res.status(500).json({ status: "Erro!", error: e });
   }
 };
+
+exports.fetchUsers = async (req, res) => {
+  try {
+    const users = await Usuario.find();
+    return res.json(users);
+  } catch (e) {
+    return res.status(500).json({ status: "Erro!", error: e });
+  }
+};
+
 
 exports.login = async (req, res) => {
   try {
@@ -72,7 +82,6 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-
     if (name.length === 0) {
       return res.json({
         status: "Erro!",
@@ -107,7 +116,7 @@ exports.register = async (req, res) => {
     const user = new Usuario({
       name,
       email,
-      password: crypted_password
+      password: crypted_password,
     });
     await user.save();
 
