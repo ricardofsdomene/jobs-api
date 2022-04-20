@@ -3,32 +3,26 @@ const Vaga = require("../models/Vaga");
 exports.add = async (req, res) => {
   try {
     const {
-      tipo,
-      enviar,
       empresa,
-      atividades,
+      cargo,
+      tipo,
+      descricao,
+      formato,
       requisitos,
       habilidades,
       beneficios,
-      cargo,
-      descricao,
-      formato,
-      experiencias,
       localidade,
     } = req.body;
 
     const vaga = new Vaga({
-      tipo,
-      enviar,
       empresa,
-      atividades,
+      cargo,
+      tipo,
+      descricao,
+      formato,
       requisitos,
       habilidades,
       beneficios,
-      cargo,
-      descricao,
-      formato,
-      experiencias,
       localidade,
     });
     await vaga.save();
@@ -50,13 +44,15 @@ exports.get = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const id = req.params.vagaId;
-    const vaga = await Vaga.findOne({ _id: id });
-    res.json(vaga);
-  } catch (e) {
-    return res.status(500).json({ stauts: "Erro!", erorr: e });
+    const id = req.params._id;
+    const vaga = await Vaga.findById(id);
+    return res.json(vaga);
+  } catch(error) {
+    return res
+      .status(404)
+      .json({ error: true, code: "vaga.notfound", message: "ops nao encontramos sua vaga"})
   }
-};
+}
 
 exports.delete = async (req, res) => {
   try {

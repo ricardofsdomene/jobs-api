@@ -5,39 +5,21 @@ const vagaSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  empresa: {
+    name: {
+      type: String
+    },
+    avatar: {
+      type: String
+    },
+    _id: {
+      // type: mongoose.Types.ObjectId
+      type: String
+    }
+  },
   tipo: {
     type: String,
     // enum: ["Estágio", "Meio Periodo"],
-  },
-  enviar: {
-    email: String,
-    assunto: String,
-  },
-  empresa: {
-    _id: {
-      type: mongoose.Types.ObjectId,
-    },
-    name: {
-      type: String,
-    },
-    avatar: {
-      type: String,
-    },
-    descricao: {
-      type: String,
-    },
-  },
-  atividades: {
-    type: Array,
-  },
-  requisitos: {
-    type: Array,
-  },
-  habilidades: {
-    type: Array,
-  },
-  beneficios: {
-    type: Array,
   },
   cargo: {
     type: String,
@@ -48,11 +30,17 @@ const vagaSchema = new mongoose.Schema({
   formato: {
     type: String,
   },
-  experiencia: {
-    type: String,
-  },
   localidade: {
     type: String,
+  },
+  requisitos: {
+    type: Array
+  },
+  habilidades: {
+    type: Array
+  },
+  beneficios: {
+    type: Array
   },
 });
 

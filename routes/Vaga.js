@@ -4,8 +4,10 @@ const router = express.Router();
 const vagaController = require("../controller/vaga");
 
 router.post("/vaga", vagaController.add);
+
+router.get("/vaga/:_id", vagaController.getById);
 router.get("/vagas", vagaController.get);
-router.get("/vaga/:vagaId", vagaController.getById);
+
 router.delete("/vaga", vagaController.delete);
 
 router.get("/filter/:filter", vagaController.param);

@@ -1,13 +1,59 @@
 const express = require("express");
 const router = express.Router();
 
-const userController = require("../controller/user");
+const jwt = require("jsonwebtoken");
 
-router.post("/signup", userController.register);
-router.post("/login", userController.login);
-router.post("/fetch", userController.fetchId);
+const JWT_SECRET = "f1naancial!";
 
-router.get("/users", userController.fetchUsers);
-router.get("/user/:_id", userController.fetchId);
+const authController = require("../controller/auth");
+
+function checkAuthMiddleware(request, response) {
+  const { authorization } = request.headers;
+
+  if (!authorization) {
+    return response.status(401).json({
+      error: true,
+      code: "token.invalid",
+      message: "Token not present.",
+    });
+  }
+
+  const [, token] = authorization?.split(" ");
+
+  if (!token) {
+    return response.status(401).json({
+      error: true,
+      code: "token.invalid",
+      message: "Token not present.",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    request.user = decoded.email;
+
+    return next();
+  } catch (error) {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return response.status(401).json({
+      error: decoded.email,
+      code: "token.expired",
+      message: "Token invalid.",
+    });
+  }
+}
+
+router.post("/sessions", authController.sessions);
+
+router.get("/me", checkAuthMiddleware, authController.me);
+
+router.post("/register", authController.register);
+
+router.post("/google", authController.register);
+
+router.post("/apple", authController.register);
+
+router.post("/login", authController.login);
 
 module.exports = router;
