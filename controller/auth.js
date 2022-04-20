@@ -53,6 +53,7 @@ exports.sessions = async (request, response) => {
 
   const { token } = generateJwt(email, {
     _id: user._id,
+    name: user.name,
     email: user.email,
     permissions: user.permissions,
     roles: user.roles,
