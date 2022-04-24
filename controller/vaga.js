@@ -47,20 +47,24 @@ exports.getById = async (req, res) => {
     const id = req.params._id;
     const vaga = await Vaga.findById(id);
     return res.json(vaga);
-  } catch(error) {
-    return res
-      .status(404)
-      .json({ error: true, code: "vaga.notfound", message: "ops nao encontramos sua vaga"})
+  } catch (error) {
+    return res.status(404).json({
+      error: true,
+      code: "vaga.notfound",
+      message: "ops nao encontramos sua vaga",
+    });
   }
-}
+};
 
 exports.delete = async (req, res) => {
   try {
-    const { _id } = req.body;
-    await Vaga.findByIdAndDelete(_id);
-    return res.send("Vaga deletada com sucesso!");
+    const id = req.params._id;
+
+    await Vaga.findByIdAndDelete(id).then(() => {
+      return res.json({ message: "Vaga deletada com sucesso!" });
+    });
   } catch (e) {
-    return res.status(500).json({ status: "Erro!", error: e });
+    return res.status(400).json({ status: "Erro!", error: e });
   }
 };
 

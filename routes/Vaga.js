@@ -8,7 +8,7 @@ router.post("/vaga", vagaController.add);
 router.get("/vaga/:_id", vagaController.getById);
 router.get("/vagas", vagaController.get);
 
-router.delete("/vaga", vagaController.delete);
+router.delete("/vaga/:_id", vagaController.delete);
 
 router.get("/filter/:filter", vagaController.param);
 

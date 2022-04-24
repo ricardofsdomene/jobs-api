@@ -33,19 +33,26 @@ exports.sessions = async (request, response) => {
   const { email, password } = request.body;
 
   if (!email || !password) {
-    return response.status(401).json({
+    return response.json({
       error: true,
       code: "credentials.invalid",
-      message: "Credentials not present.",
+      message: "Credenciais invalidas",
     });
   }
 
   const user = await Usuario.findOne({ email }).lean();
 
+  if (!user) {
+    return response.json({
+      error: true,
+      message: "E-mail or password incorrect.",
+    });
+  }
+
   const passwordMatch = await bcrypt.compare(password, user.password);
 
   if (!user || !passwordMatch) {
-    return response.status(401).json({
+    return response.json({
       error: true,
       message: "E-mail or password incorrect.",
     });
@@ -123,11 +130,57 @@ exports.refresh = async (request, response) => {
   });
 };
 
+exports.update = async (request, response) => {
+  try {
+    const key = request.params.key;
+    const value = request.params.value;
+
+    const id = request.params.userId;
+
+    // const a = key[0];
+    // const b = value[0];
+
+    const update = { [key]: value };
+
+    await Usuario.findByIdAndUpdate(
+      id,
+      update,
+      { useFindAndModify: true, new: true },
+      function (err, docs) {
+        if (err) {
+          return response.json({ error: true, message: "falhou no mongoose" });
+        } else {
+          return response.json({
+            Message: "Atualizado com sucesso",
+            user: docs,
+          });
+        }
+      }
+    )
+      .clone()
+      .catch((error) => {
+        return response.json({ error: true, message: "falhou no mongoose" });
+      });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+exports.getUserById = async (request, response) => {
+  try {
+    const id = request.params.userId;
+    const user = await Usuario.findById(id);
+    return response.json(user);
+  } catch (error) {
+    return response.json({ error: true, message: "ops" });
+  }
+};
+
 exports.me = async (request, response) => {
   try {
     const email = request.user;
 
-    console.log(request.user)
+    console.log(request.user);
 
     const user = await Usuario.findOne({ email }).lean();
 
@@ -207,6 +260,13 @@ exports.register = async (request, response) => {
   try {
     const { name, email, password } = request.body;
 
+    if (!name || !email || !password) {
+      return response.json({
+        status: "Erro!",
+        error: "Dados invalidos",
+      });
+    }
+
     if (name.length === 0) {
       return response.json({
         status: "Erro!",
@@ -251,10 +311,10 @@ exports.register = async (request, response) => {
         email: user.email,
         name: user.name,
       },
-      JWT_SECRET, 
+      JWT_SECRET,
       {
         subject: email,
-        expiresIn: "30d"
+        expiresIn: "30d",
       }
     );
 

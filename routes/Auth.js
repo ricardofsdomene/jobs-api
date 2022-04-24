@@ -44,9 +44,13 @@ function checkAuthMiddleware(request, response) {
   }
 }
 
+router.put("/update/:userId/:key/:value", authController.update);
+
 router.post("/sessions", authController.sessions);
 
 router.get("/me", checkAuthMiddleware, authController.me);
+
+router.get("/user/:userId", authController.getUserById);
 
 router.post("/register", authController.register);
 
