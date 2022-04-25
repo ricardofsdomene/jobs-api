@@ -3,6 +3,7 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 fs = require('fs');
+const path = require('path')
 
 const sharp = require("sharp");
 
@@ -29,6 +30,9 @@ mongoose.connect(server, config).then(() => {
 const port = 5556;
 const version = 0;
 
+
+
+app.use('/assets',express.static(path.join(__dirname, 'assets')));
 app.use(`/auth`, authRoutes);
 app.use(`/core`, vagaRoutes);
 app.use(`/user`, userRoutes);
