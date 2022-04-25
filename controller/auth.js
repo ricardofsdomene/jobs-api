@@ -45,7 +45,7 @@ exports.sessions = async (request, response) => {
   if (!user) {
     return response.json({
       error: true,
-      message: "E-mail or password incorrect.",
+      message: "E-mail ou senha invalidos.",
     });
   }
 
@@ -54,7 +54,7 @@ exports.sessions = async (request, response) => {
   if (!user || !passwordMatch) {
     return response.json({
       error: true,
-      message: "E-mail or password incorrect.",
+      message: "E-mail ou senha invalidos.",
     });
   }
 

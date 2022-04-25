@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const vagaSchema = new mongoose.Schema({
   createdAt: {
@@ -43,5 +44,7 @@ const vagaSchema = new mongoose.Schema({
     type: Array
   },
 });
+
+vagaSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Vaga", vagaSchema);

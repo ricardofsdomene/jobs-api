@@ -14,10 +14,23 @@ exports.getFollowing = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
   try {
-    Usuario.find({}).then((users) => {
-      return res.json(users);
-    })
-  } catch (error) {
-    return res.status(500).json({ error: true, code: "ops" });
+    const { page = 1 } = req.query;
+    const users = await Usuario.paginate({}, { page, limit: 10 });
+
+    return res.json(users);
+  } catch (e) {
+    return res.status(500).json({ stauts: "Erro!", erorr: e });
+  }
+};
+
+exports.delete = async (req, res) => {
+  try {
+    const id = req.params._id;
+
+    await Usuario.findByIdAndDelete(id).then(() => {
+      return res.json({ message: "Usuario deletado com sucesso!" });
+    });
+  } catch (e) {
+    return res.status(400).json({ status: "Erro!", error: e });
   }
 };

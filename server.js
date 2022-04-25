@@ -1,15 +1,16 @@
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+var path = require("path");
 const mongoose = require("mongoose");
-fs = require('fs');
-const path = require('path')
+fs = require("fs");
 
 const sharp = require("sharp");
 
 const authRoutes = require("./routes/Auth");
 const vagaRoutes = require("./routes/Vaga");
 const userRoutes = require("./routes/User");
+const empresaRoutes = require("./routes/Empresa");
 const multer = require("multer");
 
 const app = express();
@@ -30,13 +31,12 @@ mongoose.connect(server, config).then(() => {
 const port = 5556;
 const version = 0;
 
+app.use("/images", express.static(path.join(__dirname, "assets")));
 
-
-app.use('/assets',express.static(path.join(__dirname, 'assets')));
 app.use(`/auth`, authRoutes);
 app.use(`/core`, vagaRoutes);
 app.use(`/user`, userRoutes);
-
+app.use(`/empresa`, empresaRoutes);
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -47,41 +47,45 @@ const multerFilter = (req, file, cb) => {
 };
 
 const upload = multer({
-  fileFilter: multerFilter
+  fileFilter: multerFilter,
 });
 
-app.post('/image', upload.array(), function(req, res) {
-    const { key, base64 } = req.body;
+app.post("/image", upload.array(), function (req, res) {
+  const { key, base64 } = req.body;
 
-    let imgBuffer = Buffer.from(base64, 'base64');
-    sharp(imgBuffer)
+  let imgBuffer = Buffer.from(base64, "base64");
+  sharp(imgBuffer)
     .resize(400, 400)
     .toBuffer()
     .then((data) => {
-      console.log('Imagem adicionada com sucesso');
-      fs.writeFile(__dirname + `/upload/${key}.jpeg`, data, function (err, data) {
-        if (err) {
-          console.log('err', err)
+      console.log("Imagem adicionada com sucesso");
+      fs.writeFile(
+        __dirname + `/upload/${key}.jpeg`,
+        data,
+        function (err, data) {
+          if (err) {
+            console.log("err", err);
+          }
+          var stats = fs.statSync(__dirname + `/upload/${key}.jpeg`);
+          var fileSizeInBytes = stats.size;
+          var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
+          console.log("tamanho da imagem", fileSizeInMegabytes + "Mb");
         }
-        var stats = fs.statSync(__dirname + `/upload/${key}.jpeg`);
-        var fileSizeInBytes = stats.size;
-        var fileSizeInMegabytes = fileSizeInBytes / (1024*1024);
-        console.log('tamanho da imagem', fileSizeInMegabytes + 'Mb');
-      })
+      );
     })
     .catch((error) => {
-      console.log('error', error)
-    })
+      console.log("error", error);
+    });
 
-    // console.log('writing file...', base64Data);
-    // fs.writeFile(__dirname + "/upload/out.png", base64Data, 'base64', function(err) {
-    //     if (err) console.log(err);
-    //     fs.readFile(__dirname + "/upload/out.png", function(err, data) {
-    //         if (err) throw err;
-    //         console.log('reading file...', data.toString('base64'));
-    //         res.send(data);
-    //     });
-    // });
+  // console.log('writing file...', base64Data);
+  // fs.writeFile(__dirname + "/upload/out.png", base64Data, 'base64', function(err) {
+  //     if (err) console.log(err);
+  //     fs.readFile(__dirname + "/upload/out.png", function(err, data) {
+  //         if (err) throw err;
+  //         console.log('reading file...', data.toString('base64'));
+  //         res.send(data);
+  //     });
+  // });
 });
 
 // [ POST ] vernagro.com.br/api/v0/auth/login

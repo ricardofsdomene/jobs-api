@@ -1,3 +1,4 @@
+const { PaginationParameters } = require("mongoose-paginate-v2");
 const Vaga = require("../models/Vaga");
 
 exports.add = async (req, res) => {
@@ -35,8 +36,10 @@ exports.add = async (req, res) => {
 
 exports.get = async (req, res) => {
   try {
-    const vagas = await Vaga.find();
-    res.json(vagas);
+    const { page = 1 } = req.query;
+    const vagas = await Vaga.paginate({}, { page, limit: 10 });
+
+    return res.json(vagas);
   } catch (e) {
     return res.status(500).json({ stauts: "Erro!", erorr: e });
   }
