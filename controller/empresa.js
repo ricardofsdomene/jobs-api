@@ -6,11 +6,13 @@ const JWT_SECRET = "f1naancial!";
 
 exports.create = async (req, res) => {
   try {
+
     const { name, avatar, description } = req.body;
+
+    console.log(avatar);
 
     const empresa = new Empresa({
       name,
-      avatar,
       description,
     });
     await empresa.save();
